@@ -22,9 +22,7 @@ export default function ChannelForm({ user, open, closeModal, channelRef }) {
       .child(key)
       .update(newChannel)
       .then((data) => {
-        console.log(data);
         closeModal();
-        // setChannels([...channels, newChannel]);
       })
       .catch((err) => {
         console.log(err);

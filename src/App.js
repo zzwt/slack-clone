@@ -14,8 +14,10 @@ class App extends Component {
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.props.setCurrentUser(user);
-        this.props.history.push("/");
+        if (user.photoURL) {
+          this.props.setCurrentUser(user);
+          this.props.history.push("/");
+        }
       } else {
         this.props.clearUser();
         this.props.history.push("/login");

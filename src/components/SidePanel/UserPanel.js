@@ -22,6 +22,7 @@ const UserPanel = (props) => {
   const [userRef] = useState(firebase.auth().currentUser);
   const [usersRef] = useState(firebase.database().ref("users"));
   const [storageRef] = useState(firebase.storage().ref());
+  const [presenceRef] = useState(firebase.database().ref("presence"));
   const avatarEditorRef = useRef(null);
 
   useEffect(() => {
@@ -30,14 +31,6 @@ const UserPanel = (props) => {
     }
     //eslint-disable-next-line
   }, [downloadURL]);
-
-  // useEffect(() => {
-  //   console.log("ssssssssssssssss");
-  //   if (props.user) {
-  //     console.log("reset user triggered");
-
-  //   }
-  // }, [props.user.photoURL]);
 
   const renderOptions = () => [
     {
@@ -72,11 +65,12 @@ const UserPanel = (props) => {
   };
 
   const handleSignout = () => {
+    presenceRef.child(user.uid).remove();
     firebase
       .auth()
       .signOut()
       .then(() => {
-        console.log("signed out");
+        //console.log("signed out");
       });
   };
 
@@ -122,7 +116,6 @@ const UserPanel = (props) => {
   };
 
   const changeAvatar = () => {
-    console.log("downloadURL", downloadURL);
     userRef
       .updateProfile({
         photoURL: downloadURL,
@@ -190,7 +183,6 @@ const UserPanel = (props) => {
                       width={120}
                       height={120}
                       border={50}
-                      // color={[255, 255, 255, 0.6]} // RGBA
                       scale={1.2}
                     />
                   )}

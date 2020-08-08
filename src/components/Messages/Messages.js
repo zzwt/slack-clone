@@ -92,8 +92,6 @@ const Messages = ({ channel, user, isPrivateChannel, setUserPosts }) => {
   };
 
   const removeListener = () => {
-    // removeMessageListener(channelId);
-    // removeUserStarredListener();
     listeners.forEach((listener) => {
       listener.ref.child(listener.id).off(listener.event);
     });

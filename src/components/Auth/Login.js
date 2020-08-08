@@ -39,7 +39,6 @@ const Login = (props) => {
 
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
-      {console.log(errors)}
       <Grid.Column style={{ width: "450px" }}>
         <Header size="huge" color="orange" textAlign="center">
           <Icon name="sign-in" />

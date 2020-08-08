@@ -48,7 +48,6 @@ class Channels extends React.Component {
   };
 
   setMessageListener = (newMsgChannelId) => {
-    // console.log("setMessageListener triggerred", newMsgChannelId);
     this.state.messageRef.child(newMsgChannelId).on("value", (snap) => {
       if (this.state.channel) {
         this.handleNotifactions(newMsgChannelId, snap);
@@ -57,7 +56,6 @@ class Channels extends React.Component {
   };
 
   handleNotifactions = (newMsgChannelId, snap) => {
-    // console.log("handlenotification trigged");
     const index = this.state.notifications.findIndex(
       (notification) => notification.id === newMsgChannelId
     );

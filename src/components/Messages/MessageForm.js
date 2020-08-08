@@ -34,6 +34,50 @@ export default function MessageForm({
     //eslint-disable-next-line
   }, [message]);
 
+  useEffect(() => {
+    if (upLoadTask) {
+      upLoadTask.on(
+        "state_changed",
+        (snap) => {
+          const upLoadPercentage = Math.round(
+            (snap.bytesTransferred / snap.totalBytes) * 100
+          );
+          setPercentUploaded(upLoadPercentage);
+        },
+        // error handling
+        (err) => {
+          setUpLoading(false);
+          setUpLoadTask(null);
+          setError(err);
+          console.log(err);
+        },
+        // on successful upload
+        () => {
+          setUpLoading(false);
+          setPercentUploaded(0);
+          setUpLoadTask(null);
+
+          upLoadTask.snapshot.ref
+            .getDownloadURL()
+            .then((downloadURL) => {
+              sendFileMessage(downloadURL);
+            })
+            .catch((err) => {
+              setError(err);
+              console.log(err);
+            });
+        }
+      );
+    }
+    return () => {
+      if (upLoadTask !== null) {
+        upLoadTask.cancel();
+        setUpLoadTask(null);
+      }
+    };
+    //eslint-disable-next-line
+  }, [upLoadTask]);
+
   const onChange = (event) => {
     setMessage(event.target.value);
   };
@@ -91,7 +135,6 @@ export default function MessageForm({
 
   const uploadFile = (file, metaData) => {
     const filePath = `${getBucketPath()}/${uuidv4()}.jpg`;
-
     setUpLoading(true);
     setUpLoadTask(storageRef.child(filePath).put(file, metaData));
   };
@@ -102,59 +145,14 @@ export default function MessageForm({
       .push()
       .set(createMessage(downloadURL))
       .then(() => {
-        // setMessage("");
         setUpLoading(false);
         setError(null);
       })
       .catch((err) => {
-        // setMessage("");
         setError(err);
         console.log(err);
       });
   };
-
-  useEffect(() => {
-    if (upLoadTask) {
-      upLoadTask.on(
-        "state_changed",
-        (snap) => {
-          const upLoadPercentage = Math.round(
-            (snap.bytesTransferred / snap.totalBytes) * 100
-          );
-          console.log(upLoadPercentage);
-          setPercentUploaded(upLoadPercentage);
-        },
-        // error handling
-        (err) => {
-          setUpLoading(false);
-          setUpLoadTask(null);
-          setError(err);
-          console.log(err);
-        },
-        // on successful upload
-        () => {
-          upLoadTask.snapshot.ref
-            .getDownloadURL()
-            .then((downloadURL) => {
-              sendFileMessage(downloadURL);
-            })
-            .catch((err) => {
-              setUpLoading(false);
-              setUpLoadTask(null);
-              setError(err);
-              console.log(err);
-            });
-        }
-      );
-    }
-    return () => {
-      if (upLoadTask !== null) {
-        upLoadTask.cancel();
-        setUpLoadTask(null);
-      }
-    };
-    //eslint-disable-next-line
-  }, [upLoadTask]);
 
   const clearTyping = () => {
     typingRef.child(channel.id).child(user.uid).remove();
@@ -166,7 +164,6 @@ export default function MessageForm({
 
   const handleEmojiSelect = (emoji) => {
     const newMsg = colonToUnicode(`${message} ${emoji.colons} `);
-    console.log(message, emoji, emoji.colons, newMsg);
     setMessage(newMsg);
     setOpenEmoji(false);
     formRef.current.focus();

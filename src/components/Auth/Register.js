@@ -34,7 +34,6 @@ const Register = (props) => {
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then((createdUser) => {
-        console.log(createdUser);
         createdUser.user
           .updateProfile({
             displayName: username,
@@ -42,8 +41,8 @@ const Register = (props) => {
           })
           .then(() => {
             saveUser(createdUser).then(() => {
-              // props.setCurrentUser(createdUser.user);
-              // props.history.push("/");
+              props.setCurrentUser(createdUser.user);
+              props.history.push("/");
             });
           })
           .catch((err) => {
@@ -63,7 +62,6 @@ const Register = (props) => {
 
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
-      {console.log(errors)}
       <Grid.Column style={{ width: "450px" }}>
         <Header size="huge" color="orange" textAlign="center">
           <Icon name="registered" />

@@ -18,10 +18,6 @@ export default function FileModal(props) {
     return supportedFileTypes.includes(mime.lookup(fileName));
   };
 
-  // const uploadFile = (file, metaData) => {
-  //   console.log(file, metaData);
-  // };
-
   const sendFile = () => {
     if (file && isSupportedFileTypes(file.name)) {
       const metaData = { contentType: mime.lookup(file.name) };
